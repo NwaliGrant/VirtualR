@@ -1,10 +1,19 @@
 import { Menu, X } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import logo from "../assets/logo.png"
 import { navItems } from "../constants"
 
 export default function Navbar() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false)
+
+  // Lock/unlock body scroll when drawer opens
+  useEffect(() => {
+    if (mobileDrawerOpen) {
+      document.body.classList.add("overflow-hidden")
+    } else {
+      document.body.classList.remove("overflow-hidden")
+    }
+  }, [mobileDrawerOpen])
 
   // Toggle the mobile drawer open/close
   const toggleNavbar = () => {
@@ -18,7 +27,9 @@ export default function Navbar() {
           {/* Logo section */}
           <div className="flex items-center flex-shrink-0 space-x-2">
             <img src={logo} alt="logo" className="h-10 w-10" />
-            <span className="text-xl font-semibold tracking-tight">VirtualR</span>
+            <span className="text-xl font-semibold tracking-tight">
+              VirtualR
+            </span>
           </div>
 
           {/* Desktop navigation links */}
@@ -57,16 +68,23 @@ export default function Navbar() {
               onClick={toggleNavbar}
               className="text-gray-200 hover:text-orange-500 focus:outline-none"
             >
-              {/* Swap between Menu and X icons */}
               {mobileDrawerOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Drawer (hidden on large screens) */}
+      {/* Overlay behind drawer */}
+      {mobileDrawerOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+          onClick={toggleNavbar}
+        ></div>
+      )}
+
+      {/* Mobile Drawer */}
       <div
-        className={`fixed top-0 right-0 h-full w-64 bg-neutral-900 z-40 transform transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed top-0 right-0 h-full w-64 bg-neutral-900 z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
           mobileDrawerOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
